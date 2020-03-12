@@ -38,7 +38,15 @@ module.exports = {
             loader: 'file-loader'
           }
         ]
-      }
+      },
+      {test: /\.(frag|vert|glsl)$/,
+   use: [
+     {
+       loader: 'glsl-shader-loader',
+       options: {}
+     }
+   ]
+ }
     ]
   },
   devServer: {

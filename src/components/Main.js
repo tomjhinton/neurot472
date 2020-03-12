@@ -2,6 +2,13 @@ import React from 'react'
 import axios from 'axios'
 const THREE = require('three')
 import TweenMax from 'gsap'
+var glsl = require('glslify')
+
+
+import * as vertexShader from './vertexShader.glsl'
+import * as fragmentShader from './fragmentShader.glsl'
+
+
 
 
 class Main extends React.Component{
@@ -45,6 +52,7 @@ class Main extends React.Component{
           texture = new THREE.TextureLoader().load( `data:image/png;base64,  ${this.state.works[0].dat.slice(2).slice(0, -1)}` )
           texture2 = new THREE.TextureLoader().load( `data:image/png;base64,  ${this.state.works[1].dat.slice(2).slice(0, -1)}` )
         }
+
         const geometry = new THREE.PlaneBufferGeometry(16, 8, 1, 1)
         const material1 = new THREE.MeshBasicMaterial({
           map: texture
@@ -52,17 +60,34 @@ class Main extends React.Component{
         const material2 = new THREE.MeshBasicMaterial({
           map: texture2
         })
+let mouse = new THREE.Vector2(0, 0)
+        let uniforms = {
+	u_image: { type: 't', value: texture },
+	u_imagehover: { type: 't', value: texture2 },
+	u_mouse: { value: mouse },
+	u_time: { value: 0 },
+	u_res: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+}
 
-        const mesh1 = new THREE.Mesh(geometry, material1)
+let material = new THREE.ShaderMaterial({
+	uniforms: uniforms,
+	vertexShader: vertexShader,
+	fragmentShader: fragmentShader,
+	defines: {
+	     PR: window.devicePixelRatio.toFixed(1)
+	}
+})
+
+        const mesh1 = new THREE.Mesh(geometry, material)
         const mesh2 = new THREE.Mesh(geometry, material2)
 
 
 
-        scene.add(mesh1, mesh2)
-        let mouse = new THREE.Vector2(0, 0)
+        scene.add(mesh1)
+
 window.addEventListener('mousemove', (ev) => { onMouseMove(ev) })
 
-// ...
+
 
 function onMouseMove(event) {
 	TweenMax.to(mouse, 0.5, {
@@ -74,16 +99,16 @@ function onMouseMove(event) {
 		x: -mouse.y * 0.3,
 		y: mouse.x * (Math.PI / 6)
 	})
-  TweenMax.to(mesh2.rotation, 0.5, {
-		x: -mouse.y * 0.3,
-		y: mouse.x * (Math.PI / 6)
-	})
+  // TweenMax.to(mesh2.rotation, 0.5, {
+	// 	x: -mouse.y * 0.3,
+	// 	y: mouse.x * (Math.PI / 6)
+	// })
 }
 
 
         function animate() {
 
-
+           uniforms.u_time.value += 0.01
           /* render scene and camera */
           renderer.render(scene,camera)
           requestAnimationFrame(animate)
