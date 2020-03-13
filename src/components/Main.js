@@ -127,7 +127,7 @@ class Main extends React.Component{
 
   mouseMove(e){
 
-    console.log(e)
+    //console.log(e)
 
     this.setState({bass: `${e.screenX /100000} ${e.screenY /100000} `, scale: `${e.screenY /2}` })
   }
