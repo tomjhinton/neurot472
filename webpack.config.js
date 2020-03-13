@@ -40,13 +40,13 @@ module.exports = {
         ]
       },
       {test: /\.(frag|vert|glsl)$/,
-   use: [
-     {
-       loader: 'glsl-shader-loader',
-       options: {}
-     }
-   ]
- }
+        use: [
+          {
+            loader: 'glsl-shader-loader',
+            options: {}
+          }
+        ]
+      }
     ]
   },
   devServer: {
